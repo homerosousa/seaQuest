@@ -6,7 +6,6 @@
         init: function() {
             lastime = 0;
             lastShot = Date.now();
-            gameTime = 0;
             isOver = false;
             Stage.create();
             Control.init();
@@ -20,6 +19,7 @@
             canvas.height = 500;
             ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
+            // try world2.jgp :D
             bg = ctx.createPattern(Assets.get('img/world1.jpg'), 'repeat');
             player = new Entity({
                 size: [100, 65],
@@ -30,7 +30,6 @@
 
         },
 
-
         render: function() {
             ctx.fillStyle = bg;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -38,6 +37,7 @@
             Entities.init(Stage.explosions);
             Entities.init(Stage.bullets);
 
+            // don't render if game is over
             if (!isOver) {
                 Entities.render(player);
             }
@@ -63,6 +63,7 @@
                 player.pos[1] += player.speed * vx;
             }
             if (Control.press('SPACE') && Date.now() - lastShot > 100) {
+                // No time for sprite method, let's change the image direction
                 var bulletCustome = (player.orientation === 1 ? "img/torpedo.png" : "img/torpedoFlip.png");
 
                 torpedo = new Entity({
@@ -72,17 +73,19 @@
                     speed: 400
                 });
                 Stage.bullets.push(torpedo);
-                lastShot = Date.now();
+                // why you shoot so fast?, take it easy
+                lastShot = Date.now() + 100;
             }
 
         },
         update: function(vx) {
-            gameTime = gameTime + vx;
 
             Entities.update(vx);
             Stage.bind(vx);
 
+            // get some random enemies
             if (Math.random() < 1 - Math.pow(0.993, 1)) {
+
                 var or = Math.floor(Math.random() * 2) + 1;
                 var start = (or === 1 ? canvas.width : 0);
                 var sharkCustome = (or === 1 ? "img/shark.png" : "img/sharkFlip.png");
@@ -110,6 +113,7 @@
                     speed: 60
                 });
 
+                // add every entity to array
                 Stage.enemies.push(octopus);
                 Stage.enemies.push(shark);
                 Stage.enemies.push(badGuy);
@@ -118,8 +122,9 @@
             Stage.collisions();
         },
         tick: function() {
+            // refresh every frame
             now = Date.now();
-            vx = (now - lastime) / 500.0;
+            vx = (now - lastime) / 1000.0;
             requestAnimationFrame(Stage.tick);
             Stage.update(vx);
             lastime = now;
@@ -127,7 +132,7 @@
             // player.render();
         },
         limit: function() {
-
+            // stage limit for player
             if (player.pos[0] < 0) {
                 player.pos[0] = 0;
             } else if (player.pos[0] > canvas.width - player.size[0]) {
@@ -140,6 +145,9 @@
                 player.pos[1] = canvas.height - player.size[1];
             }
         },
+
+        // collisions detect
+
         collides: function(x, y, r, b, x2, y2, r2, b2) {
             return !(r <= x2 || x > r2 || b <= y2 || y > b2);
         },
@@ -152,17 +160,17 @@
         collisions: function() {
             Stage.limit();
 
+            // some enemy hit someone?
             for (var i = 0; i < Stage.enemies.length; i++) {
                 var pos = Stage.enemies[i].pos;
                 var size = Stage.enemies[i].size;
 
+                // player beaten by enemy?
                 if (Stage.boxCollides(pos, size, player.pos, player.size)) {
-
                     Stage.gameOver();
-
                 }
 
-
+                // enemie beaten by my bullet?
                 for (var j = 0; j < Stage.bullets.length; j++) {
                     var pos2 = Stage.bullets[j].pos;
                     var size2 = Stage.bullets[j].size;
@@ -178,7 +186,7 @@
                             url: "img/kaboom.png",
                             size: [100, 75]
                         });
-
+                        // score and kills
                         Stage.score();
                         // Remove the bullet and stop this iteration
                         Stage.bullets.splice(j, 1);
@@ -196,6 +204,8 @@
         gameOver: function() {
             isOver = true;
             document.getElementById('gameover').style.display = "block";
+            document.getElementById('score').innerHTML = 0;
+            document.getElementById('kills').innerHTML = 0;
         },
         reset: function() {
             document.getElementById('gameover').style.display = 'none';
@@ -204,6 +214,8 @@
             Stage.enemies = [];
             Stage.explosions = [];
             Stage.init();
+            myScore = 0;
+            kills = 0;
         }
     };
 })();

@@ -3,6 +3,7 @@
         loaded: {},
         callbacks: [],
         loading: function(arr) {
+            // read array images
             for (var i = 0; i < arr.length; i++) {
                 Assets.loadImages(arr[i]);
             }

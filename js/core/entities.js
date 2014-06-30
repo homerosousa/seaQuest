@@ -7,12 +7,11 @@
             }
         },
         render: function(entity) {
-            // render every record
+            // draw every object
             ctx.drawImage(Assets.get(entity.url), entity.pos[0], entity.pos[1], entity.size[0], entity.size[1]);
         },
         update: function(vx) {
-            // update all variable states
-            // bullets
+            // update positions for bullet
             for (var i = 0; i < Stage.bullets.length; i++) {
                 if (Stage.bullets[i].orientation === 1) {
                     Stage.bullets[i].pos[0] += Stage.bullets[i].speed * vx;
@@ -25,7 +24,7 @@
                     i--;
                 }
             }
-            // enemies
+            // update positions for enemies
             for (var a = 0; a < Stage.enemies.length; a++) {
                 if (Stage.enemies[a].orientation === 1) {
                     Stage.enemies[a].pos[0] -= Stage.enemies[a].speed * vx;
@@ -39,10 +38,10 @@
                 }
             }
 
-            // explosions
-            for (var i = 0; i < Stage.explosions.length; i++) {
-                Stage.explosions.splice(i, 1);
-                // i--;
+            //  remove explosions
+            for (var e = 0; e < Stage.explosions.length; e++) {
+                Stage.explosions.splice(e, 1);
+                e--;
             }
         }
     };

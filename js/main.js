@@ -1,6 +1,6 @@
 document.onreadystatechange = function() {
     if (document.readyState === 'complete') {
-
+        // load all assets before start
         Assets.loading(
             [
                 "img/badGuy.png",
