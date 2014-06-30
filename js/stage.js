@@ -11,16 +11,15 @@
             Stage.create();
             Control.init();
             Stage.tick();
+            myScore = 0;
+            kills = 0;
         },
         create: function() {
             canvas = document.createElement("canvas");
             canvas.width = 800;
             canvas.height = 500;
-            canvas.style = "position: absolute; top: 50px; left: 50px; border:2px solid blue";
             ctx = canvas.getContext("2d");
-
             document.body.appendChild(canvas);
-
             bg = ctx.createPattern(Assets.get('img/world1.jpg'), 'repeat');
             player = new Entity({
                 size: [100, 65],
@@ -179,12 +178,20 @@
                             url: "img/kaboom.png",
                             size: [100, 75]
                         });
+
+                        Stage.score();
                         // Remove the bullet and stop this iteration
                         Stage.bullets.splice(j, 1);
                         break;
                     }
                 }
             }
+        },
+        score: function() {
+            myScore += 35;
+            kills += 1;
+            document.getElementById('score').innerHTML = myScore;
+            document.getElementById('kills').innerHTML = kills;
         },
         gameOver: function() {
             isOver = true;

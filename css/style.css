@@ -8,6 +8,13 @@ canvas{
 
 }
 
+.board{
+
+	text-align: center;
+	font-family: Arial;
+	font-size:50px;
+}
+
 #gameover{
 	display:none;
 	position: absolute;
